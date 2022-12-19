@@ -178,8 +178,8 @@ class ExpandedTile extends StatefulWidget {
   final ExpandedTileController controller; // required
   final Curve? expansionAnimationCurve; // default is ease
   final Duration? expansionDuration; // default is 200ms
-  final VoidCallback? onTap;
-  final VoidCallback? onLongTap;
+  final Function? onTap;
+  final Function? onLongTap;
   const ExpandedTile({
     key,
 ////? Header
@@ -226,8 +226,8 @@ class ExpandedTile extends StatefulWidget {
     final ExpandedTileController? controller, // required
     final Curve? expansionAnimationCurve, // default is ease
     final Duration? expansionDuration, // default is 200ms
-    final VoidCallback? onTap,
-    final VoidCallback? onLongTap,
+    final Function? onTap,
+    final Function? onLongTap,
   }) {
     return ExpandedTile(
       key: key,
