@@ -522,6 +522,22 @@ class _ExpandedTileListState extends State<ExpandedTileList> {
                                 }
                                 openedTilesControllers
                                     .add(tileControllers[index]);
+                                if (widget
+                                        .itemBuilder(
+                                          context,
+                                          index,
+                                          tileControllers[index],
+                                        )
+                                        .onTap !=
+                                    null) {
+                                  widget
+                                      .itemBuilder(
+                                        context,
+                                        index,
+                                        tileControllers[index],
+                                      )
+                                      .onTap!();
+                                }
                               } else {
                                 openedTilesControllers
                                     .remove(tileControllers[index]);
@@ -572,6 +588,22 @@ class _ExpandedTileListState extends State<ExpandedTileList> {
                               } else {
                                 openedTilesControllers
                                     .remove(tileControllers[index]);
+                                if (widget
+                                        .itemBuilder(
+                                          context,
+                                          index,
+                                          tileControllers[index],
+                                        )
+                                        .onTap !=
+                                    null) {
+                                  widget
+                                      .itemBuilder(
+                                        context,
+                                        index,
+                                        tileControllers[index],
+                                      )
+                                      .onTap!();
+                                }
                               }
                             });
             },
