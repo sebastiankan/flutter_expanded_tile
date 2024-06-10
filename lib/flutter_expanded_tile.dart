@@ -114,6 +114,7 @@ class ExpandedTileThemeData {
   ////? Content
   final Color? contentBackgroundColor;
   final EdgeInsetsGeometry? contentPadding;
+  final List<BoxShadow>? boxShadows;
   final double? contentRadius;
   const ExpandedTileThemeData({
     key,
@@ -127,6 +128,7 @@ class ExpandedTileThemeData {
     this.contentBackgroundColor = const Color(0xffeeeeee),
     this.contentPadding = const EdgeInsets.all(16.0),
     this.contentRadius = 8.0,
+    this.boxShadows = null,
   });
 }
 
@@ -289,92 +291,112 @@ class _ExpandedTileState extends State<ExpandedTile>
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        //* Header
-        Material(
-          color: widget.theme!.headerColor,
-          borderRadius: BorderRadius.circular(widget.theme!.headerRadius!),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(widget.theme!.headerRadius!),
-            splashColor: widget.theme!.headerSplashColor,
-            onTap: !widget.enabled
-                ? () {}
-                : () {
-                    tileController.toggle();
-                    if (widget.onTap != null) {
-                      return widget.onTap!();
-                    }
-                  },
-            onLongPress: !widget.enabled
-                ? () {}
-                : () {
-                    if (widget.onLongTap != null) {
-                      return widget.onLongTap!();
-                    }
-                  },
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius:
-                    BorderRadius.circular(widget.theme!.headerRadius!),
-              ),
-              padding: widget.theme!.headerPadding,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  widget.leading != null
-                      ? Padding(
-                          padding: widget.theme!.leadingPadding!,
-                          child: widget.leading,
-                        )
-                      : Container(),
-                  Expanded(
-                    child: Container(
-                      padding: widget.theme!.titlePadding,
-                      child: widget.title,
-                    ),
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(widget.theme!.headerRadius ?? 8),
+          color: widget.theme!.headerColor ?? Colors.white,
+          boxShadow: widget.theme!.boxShadows),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          //* Header
+          Material(
+            color: widget.theme!.headerColor,
+            borderRadius: _isExpanded
+                ? BorderRadius.vertical(
+                    top: Radius.circular(widget.theme!.headerRadius!))
+                : BorderRadius.vertical(
+                    top: Radius.circular(widget.theme!.headerRadius!),
+                    bottom: Radius.circular(
+                      widget.theme!.headerRadius!,
+                    )),
+            child: InkWell(
+              borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(
+                    widget.theme!.headerRadius!,
                   ),
-                  Transform.rotate(
-                    angle: widget.trailingRotation != null
-                        ? _isExpanded
-                            ? angleToRad(widget.trailingRotation!)
-                            : 0
-                        : 0,
-                    child: Padding(
-                      padding: widget.theme!.trailingPadding!,
-                      child: widget.trailing,
+                  bottom: Radius.circular(
+                    widget.theme!.headerRadius!,
+                  )),
+              splashColor: widget.theme!.headerSplashColor,
+              onTap: !widget.enabled
+                  ? () {}
+                  : () {
+                      tileController.toggle();
+                      if (widget.onTap != null) {
+                        return widget.onTap!();
+                      }
+                    },
+              onLongPress: !widget.enabled
+                  ? () {}
+                  : () {
+                      if (widget.onLongTap != null) {
+                        return widget.onLongTap!();
+                      }
+                    },
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(widget.theme!.headerRadius!)),
+                ),
+                padding: widget.theme!.headerPadding,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    widget.leading != null
+                        ? Padding(
+                            padding: widget.theme!.leadingPadding!,
+                            child: widget.leading,
+                          )
+                        : Container(),
+                    Expanded(
+                      child: Container(
+                        padding: widget.theme!.titlePadding,
+                        child: widget.title,
+                      ),
                     ),
-                  ),
-                ],
+                    Transform.rotate(
+                      angle: widget.trailingRotation != null
+                          ? _isExpanded
+                              ? angleToRad(widget.trailingRotation!)
+                              : 0
+                          : 0,
+                      child: Padding(
+                        padding: widget.theme!.trailingPadding!,
+                        child: widget.trailing,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        SizedBox(
-          height: widget.contentSeperator,
-        ),
-        //* Content
-        AnimatedSize(
-          duration: widget.expansionDuration!,
-          curve: widget.expansionAnimationCurve!,
-          child: Container(
-            child: !_isExpanded
-                ? null
-                : Container(
-                    decoration: BoxDecoration(
-                      color: widget.theme!.contentBackgroundColor,
-                      borderRadius:
-                          BorderRadius.circular(widget.theme!.contentRadius!),
-                    ),
-                    padding: widget.theme!.contentPadding,
-                    width: double.infinity,
-                    child: widget.content,
-                  ),
+          SizedBox(
+            height: widget.contentSeperator,
           ),
-        ),
-      ],
+          //* Content
+          AnimatedSize(
+            duration: widget.expansionDuration!,
+            curve: widget.expansionAnimationCurve!,
+            child: Container(
+              child: !_isExpanded
+                  ? null
+                  : Container(
+                      decoration: BoxDecoration(
+                        color: widget.theme!.contentBackgroundColor,
+                        borderRadius: BorderRadius.vertical(
+                            bottom:
+                                Radius.circular(widget.theme!.headerRadius!)),
+                      ),
+                      padding: widget.theme!.contentPadding,
+                      width: double.infinity,
+                      child: widget.content,
+                    ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
